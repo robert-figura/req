@@ -1,0 +1,196 @@
+#!/bin/bash
+
+# defaults:
+export REQ_DIR="${REQ_DIR:-$HOME/.req}"
+export TEMP="${TEMP:-$REQ_DIR/tmp}"
+# need this as a variable here:
+port="open"
+
+################################################################
+
+# protect against accidental fork bombing:
+export REQ_LEVEL="$((0$REQ_LEVEL + 1))"
+if test "$REQ_LEVEL" -gt "5" ; then
+  echo "$0: abort: too much nesting"
+  exit 255
+fi
+
+function usage {
+  echo "$0 [-OPTIONS...] DATA"
+  echo
+  gawk '
+/^#/ {
+  next
+}
+func rpad(s, n) {
+  for(n -= length(s); n > 0; --n)
+    s = s " "
+  return s
+}
+match($0, /(-[a-zA-Z|-]*)[)] # (.*)$/, m) {
+  print rpad(m[1], 12) m[2]
+}
+' "$0"
+  exit
+}
+
+function req_awk {
+# todo: could pass basic awk call in environment so the following does not have to be duplicated:
+  exec gawk                      \
+    -f "main.head.awk"  \
+    -f "port.$port.awk" \
+    -f "main.tail.awk"  \
+    -v "header=$message_file"    \
+    "$@"
+}
+
+function attr {
+  if test x"${1/=*/}" = x"port" ; then
+    port="${1/port=/}"
+  fi
+  # todo: encode newlines and backslashes?
+  echo "$1" >> "$message_file"
+}
+
+data_in_file=""
+function argData {
+  local rs
+  rs="$1"
+  shift
+  if test -z "$data_in_file" ; then
+    echo -n "$1" >> "$data_file"
+    shift
+    data_in_file="yes"
+  fi
+  while test -n "$1" ; do
+    echo -n "$rs$1" >> "$data_file"
+    shift
+  done
+}
+
+################################################################
+
+export LC_ALL="C"
+export AWKPATH="$REQ_DIR/src"
+export AWKLIBPATH="$REQ_DIR/src"
+
+message_id="$(date "+%s")-$$"
+message_file="$TEMP/req-$message_id.args"
+data_file="$TEMP/req-$message_id.data"
+
+# todo: better temp dir location:
+mkdir -p "TEMP"
+touch "$message_file"
+
+if tty -s <&1 ; then
+  attr "term=$TERM"
+fi
+
+# todo: cmdline shortcut: discover command, look for one that matches a regex and just use that
+while test -n "$1" ; do
+  case "$1" in
+    -p) # port (-a port=<port>)
+      attr "port=$2"
+      shift
+      ;;
+    -f) # triggering application (-a from=<client>)
+      attr "from=$2"
+      shift
+      ;;
+
+    -menu) # always display menu
+      attr "menu=default"
+      ;;
+    -select) # select from menu, -select <number>
+      attr "select=$2"
+      attr "menu=print" # because select is implemented in menu_print()
+      shift
+      ;;
+    -d) # print menu and exit (-menu -a menu_type=print)
+      attr "menu=print"
+      ;;
+
+    -a) # assign attribute, -a <name>=<value>
+      a="$2"
+      shift
+      attr "$a"
+      # todo: find a better way to pass format=
+      if test x"$a" = x"format=alias" ; then
+	attr format=alias
+	argData $'\001' "$@"
+	break
+      fi
+      ;;
+    -A) # assign attribute, -A <name> <value>
+      a="$2=$3"
+      shift
+      shift
+      attr "$a"
+      # todo: find a better way to pass format=
+      if test x"$a" = x"format=alias" ; then
+	attr format=alias
+	argData $'\001' "$@"
+	break
+      fi
+      ;;
+    -m) # import header file, -m <file>
+      # todo: won't recognize port=... - is that a good thing?
+      cat "$2" >> "$message_file"
+      shift
+      ;;
+
+    # todo: mixing input types is not supported
+    -e|--) # rest of commandline is a single data record
+      shift
+      argData $'\n' "$*"
+      break
+      ;;
+    -alias) # alias mode (-a format=alias)
+      shift
+      attr format=alias
+      argData $'\001' "$@"
+      break
+      ;;
+    -stdin) # read from stdin, ignore rest of commandline
+      # todo: this ignores previous arguments. fix it?
+      req_awk "/dev/stdin"
+      ;;
+    -file) # read files, -file <file1>...
+      shift
+      # todo: this ignores previous arguments. fix it?
+      req_awk "$@"
+      ;;
+    -rfile) # reverse read files, -rfile <file1>...
+      shift
+      tac "$@" >> "$data_file"
+      break
+      ;;
+
+    -percent) # substitute e.g. %ctx.xwin in data
+      attr "filter_percent=1"
+      ;;
+
+    -t|-test) # don't run but print command (-a run_hook=print)
+      attr "run_hook=print"
+      ;;
+    -v) # be verbose
+      export REQ_VERBOSE=1
+      ;;
+    -V|-version) # show version
+      REQ_VERSION="0.1"
+      echo "req-$REQ_VERSION, (c) 2012-2014 Robert Figura, see LICENSE for details"
+      exit 0
+      ;;
+
+    -h|-help) # display this usage info
+      usage
+      ;;
+
+    *)
+      argData $'\n' "$1"
+      ;;
+  esac
+  shift
+done
+
+req_awk -v rmfile="$data_file" "$data_file"

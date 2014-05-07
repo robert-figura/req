@@ -1,0 +1,7 @@
+
+[extdiff]
+req = req -p dispatch -f hg-diff -alias
+
+[tortoisehg]
+vdiff.req = req -f tortoisehg -p diff -alias
+editor = req -p dispatch -f EDITOR

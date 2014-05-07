@@ -1,0 +1,6 @@
+^src/vmenu$
+^src/config.mk$
+^src/exec\.so$
+\.o$
+^\.git/
+^\.gitignore

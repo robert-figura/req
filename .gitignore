@@ -1,0 +1,7 @@
+src/vmenu
+src/config.mk
+src/exec.so
+src/*.o
+.hg
+.hgtags
+*~

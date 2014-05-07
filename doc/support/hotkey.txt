@@ -1,0 +1,31 @@
+
+This is the most powerful way to integrate req with other applications.
+
+You need xbindkeys installed:
+http://hocwp.free.fr/xbindkeys/xbindkeys.html
+
+$ bin/xbindkeys-hotkeyd.sh
+
+the default port.hotkey.awk will make the following hotkeys available:
+
+# req open on x11 selection (using xclip)
+mod-a      req -p open -f wm `xclip -o`
+mod-ctl-a  req -p open -f wm -menu `xclip -o`
+# req start on start menu selection (using dmenu)
+mod-s      req -p start -f wm `cat ~/.req/list/favorites | dmenu`
+mod-ctl-s  req -p start -f wm -menu `cat ~/.req/list/favorites | dmenu`
+# req start on start menu selection (using dmenu)
+mod-s      req -p open -f wm `cat ~/.req/list/history | dmenu`
+mod-ctl-s  req -p open -f wm -menu `cat ~/.req/list/history | dmenu`
+
+# window title menu
+mod-n      req -menu -p wm -f wm -percent %ctx.wm_name
+# window menu (using xprop):
+mod-m      req -menu -p wm -f wm -percent %ctx.xwin
+
+# copy selection to clipboard
+mod-c      xclip -o | xclip -selection clipboard -i
+# paste clipboard to selection
+mod-v      xclip -selection clipboard -o | xclip -i
+
+some hotkeys matching my keyboard to change av intensity.

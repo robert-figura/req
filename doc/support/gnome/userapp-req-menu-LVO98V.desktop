@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=req -menu
+Exec=req -p dispatch -f gnome-desktop-menu %F
+NoDisplay=true
