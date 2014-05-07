@@ -228,14 +228,8 @@ BASIC ARCHITECTURE
 
 DOWNLOAD
 
-homepage
-http://teslawm.org/req
-
-mercurial
-hg clone http://teslawm.org/req/hg ~/.req
-
 github
-git clone http://github.org/req ~/.req
+$ git clone https://github.com/robert-figura/req ~/.req
 
 
 DEPENDENCIES
