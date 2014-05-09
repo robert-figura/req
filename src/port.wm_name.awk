@@ -45,38 +45,24 @@ function listprefix(f, url, m,    l, rt) {
     return ""
 }
 
+match(get("ctx.xprop.url"), /^https?:\/\/([^\/]*)/, m) {
+    xprop_url_host = m[1]
+}
+
+# avoid having passwords in this file:
 (e = listprefix(HOME "/.enter", $1)) ||
 (e = listprefix(HOME "/.enter", get("ctx.xprop.url"))) {
     run(e)
 }
-
-match(get("ctx.xprop.url"), /^https?:\/\/([^\/]*)/, m) {
-    xprop_url_host = m[1]
-}
-xprop_url_host == "admin.df.eu" ||
-xprop_url_host == "admin.jiffybox.de" ||
 xprop_url_host == "facebook.com" {
     run(enter(Q(xprop_url_host)))
 }
-
 xprop_url_host == "plus.google.com" ||
 xprop_url_host == "accounts.google.com" {
     run(enter("plus.google.com"))
 }
 
-xprop_url_host == "config.stratoserver.net" {
-    label("enter reseller"); run(enter("r1368785"))
-    label("enter dedicated"); run(enter("h1368582.stratoserver.net"))
-}
-
-get("ctx.xprop.url") == "https://www.strato.de/apps/CustomerService" {
-    run(enter(get("ctx.xprop.url")))
-}
-
-xprop_url_host == "www.netcologne.de" {
-    run(enter("10710387 netcologne"))
-}
-
+# offer to open documentation
 get("ctx.xprop.wm_name") == "gp" {
     run("xdvi " Q("/usr/share/doc/pari/doc/users.dvi"))
     menu(man("gp"))

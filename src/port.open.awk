@@ -68,18 +68,6 @@ func mysql(s) {
 /^(SELECT|INSERT|UPDATE|DELETE)/ {
     label("mysql"); menu("@mysql " $0)
 }
-# tycoo.net dumpcat, debug tool for software i'm developing
-BEGIN {
-    defAttr("tycoo_net", HOME "/src/tycoo.net/rfigura")
-}
-match($0, /^(panel\.[a-z_]*)\.plug\./, m) {
-    let("pwd", attr["tycoo_net"])
-    export("xterm_title", m[1]); run(pager("bin/dumpcat.php 2>&1 " Q($0)))
-}
-/^plug\./ && match(get("ctx.xprop.wm_name"), /(panel\.[a-z_]*)/, m) {
-    let("pwd", attr["tycoo_net"])
-    export("xterm_title", m[1]); run(pager("bin/dumpcat.php 2>&1 " Q(m[1] "." $0)))
-}
 
 get("email") {
     label("email"); run("claws-mail --compose "Q(get("email")))
