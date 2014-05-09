@@ -141,7 +141,7 @@ this. Here's an easy one to think of, others are more fun to look at:
       label("colorpicker"); run(wish(c))
   }
 
-You can call internal functions instead of shell scripts, and read all
+You can call internal functions instead of shell scripts and read all
 remaining data when that happens to be the user's choice:
 
   func mysql(s) {
@@ -173,6 +173,8 @@ elements.
   $ ./req -d foobar
   # copy front-end to someplace in your path:
   $ cp req ~/bin
+
+You could stop here.
 
   ### build exec.so
   $ cp config.mk.sample config.mk
@@ -207,9 +209,6 @@ elements.
 - bash:
   http://cnswww.cns.cwru.edu/~chet/bash/bashtop.html
 
-- gawkapi.h headers, gnu make, and some c compiler (for exec.so support)
-  - supposed to be optional. will be fixed!
-
 == Other suggested software ==
 
 - file (file type recognition)
@@ -224,6 +223,8 @@ elements.
   http://hocwp.free.fr/xbindkeys/xbindkeys.html
 - xterm (auto-set xterm background examples)
   http://invisible-island.net/xterm
+- gawkapi.h headers, gnu make, and some c compiler (for exec.so support)
+  http://www.gnu.org/software/gawk/gawk.html
 - less (the default pager)
   http://www.greenwoodsoftware.com/less
 - dwm (fast tiling windowmanager)
