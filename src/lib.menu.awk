@@ -110,20 +110,6 @@ func menu_9menu(items,    c) {
 	c = c " " Q(items[menu_index]["label"] ":" menu_index)
     return trim(substr(btick("killall -q 9menu 2> /dev/null || " c), 3))
 }
-func menu_vmenu(items,    c) {
-    attr["menu_font"] = "-*-lucida-medium-r-*-*-19-*-*-*-*-*-iso10646-*"
-    c = REQ_DIR "/src/vmenu"
-    c = c flag("-font", get("menu_font"))
-    c = c flag("-nf", get("menu_fg"))
-    c = c flag("-nb", get("menu_bg"))
-    c = c flag("-sf", get("menu_sel_fg"))
-    c = c flag("-sb", get("menu_sel_bg"))
-    c = c flag("-br", get("menu_border"))
-    for(menu_index = 1; menu_index <= menu_count; ++menu_index)
-#    for(i in items)
-	c = c " " Q(menu_index) " " Q(items[menu_index]["label"])
-    return trim(btick("killall -q vmenu 2> /dev/null || " c))
-}
 
 func menu_default(items) {
     # term detection does not always work. e.g.:

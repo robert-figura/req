@@ -14,7 +14,7 @@
 
 BEGIN {
     DEFAULT_MENU["menu"] = "default"
-    MOUSE_MENU["menu"] = "vmenu"
+    MOUSE_MENU["menu"] = "9menu"
 }
 
 function menucolors(fg, bg, selfg, selbg,    s) {
@@ -25,7 +25,6 @@ function menucolors(fg, bg, selfg, selbg,    s) {
 }
 # events without input should receive it's event identifier as input # todo: we can do better!
 attr["from"] == "wm" && $0 == "title1" {
-#    export("menu", "vmenu") # <-- todo: this disturbs menu operation, cannot get rid of MOUSE_MENU that way!
     menucolors("#ffffff", "#006699", "#ffffff", "#ff7f00")
     run(nest(get("ctx.xprop.wm_name"), "wm_name", MOUSE_MENU))
 }

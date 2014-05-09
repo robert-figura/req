@@ -1,7 +1,7 @@
 
 include config.mk
 
-all: options vmenu exec.so
+all: options exec.so
 
 options:
 	@echo req build options:
@@ -17,15 +17,11 @@ exec.so: exec.c
 	@echo CC $<
 	@${CC} -c ${CFLAGS} $<
 
-vmenu: config.mk vmenu.o
-	@echo LD -o $@
-	@${CC} -o $@ vmenu.o ${LDFLAGS}
-
 config.mk:
 	cp -n config.mk.sample config.mk
 
 clean:
 	@echo cleaning
-	@rm -f vmenu vmenu.o
+	@rm -f exec.so exec.o
 
 .PHONY: all options clean
