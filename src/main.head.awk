@@ -24,7 +24,7 @@ BEGIN {
     # defaults
     defAttr("port", "open") # note: the req shell front end uses it's copy to select a port.foo.awk file
     defAttr("from", "shell")
-    defAttr("run_hook", "exec")
+    defAttr("run_hook", "spawn")
     defAttr("run_per_record", 1)
     defAttr("filter_percent", 0)
     defAttr("filter_skip_empty", 1)

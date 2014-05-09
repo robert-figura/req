@@ -82,35 +82,33 @@ func hook(type, f, arg) {
 }
 
 func runHook(arg,    m) {
+    verbose("exec: " arg)
     if(attr["run_hook"] == "print")
 	run_print(arg);
     else if(match(arg, /^@([a-zA-Z_][0-9a-zA-Z_]*)( +(.*))?$/, m))
 	hook("", m[1], m[3]) # todo: use "at" here (need to update all function names called that way)
     else
 	hook("run", attr["run_hook"], arg)
+    quit(0)
 }
 func run_print(cmd) {
     print cmd
-    quit(0)
 }
 func run_system(cmd) {
-    verbose("exec: " cmd)
-    quit(system(cmd))
+    system(cmd)
 }
-@load "exec.so"
+func run_spawn(cmd) {
+    system(cmd " &")
+}
+# exec() comes with awk -l exec.so ...
 func run_exec(cmd) {
     # earlier extension api was better because we could react on missing exec.so
 #    if(extension("exec.so", "dl_load"))
 #	run_system(cmd)
-    
-    verbose("exec: " cmd)
     cleanup()
     exec(cmd)
-
-    # this should also execute the END block
+    # this should also execute the END block:
 #    exec(cmd, 1)
-    # the c extension can't do this (?):
-#    exit 0
 }
 
 func doIt() {

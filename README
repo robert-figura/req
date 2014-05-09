@@ -169,14 +169,17 @@ elements.
 
   $ git clone https://github.com/robert-figura/req ~/.req
   $ cd ~/.req
-  $ cp config.mk.sample config.mk
-  ### fetch or locate awk extension header
-  ### edit config.mk
-  $ make
-  ### test it:
+  # test it:
   $ ./req -d foobar
-  ### copy front-end to someplace in your path:
+  # copy front-end to someplace in your path:
   $ cp req ~/bin
+
+  ### build exec.so
+  $ cp config.mk.sample config.mk
+  # fetch or locate awk extension header, edit config.mk:
+  $ make
+  # edit src/main.head.awk, change the default for run_hook:
+  #   defAttr("run_hook", "exec")
 
   ### xterm colorization
   $ alias xterm='req -p xterm -alias'

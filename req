@@ -35,12 +35,17 @@ match($0, /(-[a-zA-Z|-]*)[)] # (.*)$/, m) {
 }
 
 function req_awk {
-# todo: could pass basic awk call in environment so the following does not have to be duplicated:
-  exec gawk                      \
-    -f "main.head.awk"  \
-    -f "port.$port.awk" \
-    -f "main.tail.awk"  \
-    -v "header=$message_file"    \
+# todo: pass basic awk call in environ so the following doesn't get duplicated:
+  exec_so_args=""
+  if test -r "$REQ_DIR/src/exec.so" ; then
+    exec_so_args="-l exec.so"
+  fi
+  exec gawk                     \
+    $exec_so_args		\
+    -f "main.head.awk"  	\
+    -f "port.$port.awk" 	\
+    -f "main.tail.awk"  	\
+    -v "header=$message_file"	\
     "$@"
 }
 
