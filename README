@@ -1,49 +1,45 @@
 
-req will harbor your personal unix knowledge in a central place.
-Access your commandline snippets and collected wisdom by label,
-comment or substring, or filter using data from your current working
-context. Bring reason to your history, favorites, scripts, aliases,
-abbreviations, and whatnot.
+= req - a gawk und dmenu powered plumberlike =
 
 [...plumber?] I seem to remember thinking that it was sort of awk inspired
 (Aharon Robbins on comp.lang.awk)
 
-Powered by standard unix interfaces it works with most unix
-applications.
+Rob Pike's paper[1] does a good job at explaining what plumber does.
+With req you further get a scripting language for rules, a menu api,
+and lots of examples to get you started.
 
-req is your compact and portable way to program personal workflow
-elements in gnu awk. It is a rapid prototyping framework for micro
-interaction design to enhance your personal unix experience.
+[1] "Plumbing and Other Utilities", Rob Pike
+http://doc.cat-v.org/plan_9/4th_edition/papers/plumb
 
-To personalize your new pet you'll want to enter small scripts, shell
-commands, and quite possibly regular expressions. If you already wrote
-small scripts, perfect! If you're a fan of the commandline you'll love
-it!
+req homepage:
+https://github.com/robert-figura/req
 
 
-KEYWORDS
+= SYNOPSIS =
 
-open file & http & ftp & ssh url, context sensitive start menu &
-application launcher, filename extension & content based mime-type
-discovery, hotkey daemon, search & download frontend, centralized
-history & favorites & bookmarks, bash completion agent, clipboard &
-settings manager, xterm background colorizer, automount alternative,
-desktop accelerator & time saver & shortcut, inter-application
-workflow optimizer, ad-hoc microformat parser, system and process info
-& network scanner gui, manual & info page & documentation launcher,
-dvb channel select, better xdg_open & dwim, and much more!
+  req [-OPTIONS...] DATA
 
-Inspired by plan9's plumber. Small source, regexp pattern rules,
-inline shell script, commandline & console & x11 interfaces, dmenu
-powered, in bash & GNU awk!
+  -p          port (-a port=<port>)
+  -f          triggering application (-a from=<client>)
+  -menu       always display menu
+  -select     select from menu, -select <number>
+  -d          print menu and exit (-menu -a menu_type=print)
+  -a          assign attribute, -a <name>=<value>
+  -A          assign attribute, -A <name> <value>
+  -m          import header file, -m <file>
+  -e|--       rest of commandline is a single data record
+  -alias      alias mode (-a format=alias)
+  -stdin      read from stdin, ignore rest of commandline
+  -file       read files, -file <file1>...
+  -rfile      reverse read files, -rfile <file1>...
+  -percent    substitute e.g. %ctx.xwin in data
+  -t|-test    don't run but print command (-a run_hook=print)
+  -v          be verbose
+  -V|-version show version
+  -h|-help    display this usage info
 
 
-LICENSE
-
-see the LICENSE file
-
-
-SHOW CASES
+= SHOW CASES =
 
 Usually you'd bind a hotkey to run req on clipboard contents. Or set
 up applications to let those run req, e.g. your filemanager to run req
@@ -98,7 +94,7 @@ requested.
   1 - cal
 
 
-EXAMPLE CODE
+= EXAMPLE CODE =
 
 Your rules should go to the port.*.awk files. It can be as simple as the
 following two-liner suggests:
@@ -116,7 +112,7 @@ In case you want to add new data types, or new patterns for existing
 data types, you should add code to some class*.awk. Look, req can be a
 powerful front-end for unix commands:
 
-  # the following gives a minimalistic process manager:
+  # a minimalistic process manager:
   # class.awk:
   match($0, /^([0-9]+)$/, m) {
       set("decimal", "" (0 + m[1]))
@@ -130,11 +126,10 @@ powerful front-end for unix commands:
       label("SIGTERM"); menu("kill -TERM " Q(get("pid")))
   }
 
-The following is to suggest using req with other scripting languages.
-There are many ways to do this, here's an easy one to think of, others
-are more fun to look at:
+Using req with other scripting languages. There are many ways to do
+this. Here's an easy one to think of, others are more fun to look at:
 
-  # a rule to open tk's colorpicker, allowing it to run without choice
+  # open tk's colorpicker, allowing it to run without choice
   # port.open.awk:
   func wish(script) {
        return "echo " Q(script) " | wish"
@@ -146,9 +141,8 @@ are more fun to look at:
       label("colorpicker"); run(wish(c))
   }
 
-You get quite some flexibility. You can call internal functions
-instead of shell scripts, and read all remaining data when that
-happens to be the user's choice:
+You can call internal functions instead of shell scripts, and read all
+remaining data when that happens to be the user's choice:
 
   func mysql(s) {
       s = collapse(s)
@@ -160,230 +154,78 @@ happens to be the user's choice:
       label("mysql"); menu("@mysql " $0)
   }
 
-Suggestion: If you have a comfy working ruleset do `hg commit` to back
+Suggestion: If you have a comfy working ruleset do `git commit` to back
 it up!
 
-Suggestion: Read the source. There is no easier way to explain the power.
+Suggestion: Read the source. First try some src/port.*.awk files,
+maybe start here:
+https://github.com/robert-figura/req/blob/master/src/port.open.awk
 
 Suggestion: Grep the source for menu labels, commands or namespace
 elements.
 
 
-SYNOPSIS
+= INSTALL =
 
-  req [-OPTIONS...] DATA
+  $ git clone https://github.com/robert-figura/req ~/.req
+  $ cd ~/.req
+  $ cp config.mk.sample config.mk
+  ### fetch or locate awk extension header
+  ### edit config.mk
+  $ make
+  ### test it:
+  $ ./req -d foobar
+  ### copy front-end to someplace in your path:
+  $ cp req ~/bin
 
-  -p          port (-a port=<port>)
-  -f          triggering application (-a from=<client>)
-  -menu       always display menu
-  -select     select from menu, -select <number>
-  -d          print menu and exit (-menu -a menu_type=print)
-  -a          assign attribute, -a <name>=<value>
-  -A          assign attribute, -A <name> <value>
-  -m          import header file, -m <file>
-  -e|--       rest of commandline is a single data record
-  -alias      alias mode (-a format=alias)
-  -stdin      read from stdin, ignore rest of commandline
-  -file       read files, -file <file1>...
-  -rfile      reverse read files, -rfile <file1>...
-  -percent    substitute e.g. %ctx.xwin in data
-  -t|-test    don't run but print command (-a run_hook=print)
-  -v          be verbose
-  -V|-version show version
-  -h|-help    display this usage info
+  ### xterm colorization
+  $ alias xterm='req -p xterm -alias'
 
+  ### bash completion
+  $ complete -o default -C 'req -p bash-completion -alias' -D
 
-BASIC ARCHITECTURE
+  ### hotkey daemon
+  $ ~/.req/bin/xbindkeys-hotkeyd.sh &
 
-- you provide some data via the commandline front end:
-  $ req foobar
-  $ echo foobar | req -stdin
-  # optionally specify to load port.start.awk, to allow running commands
-  $ req -p start xterm
-  # request a menu
-  $ req -menu ...
-  # or explicitly add attributes
-  $ req -a menu=9menu ...
-- the data is then fed to an awk process
-- (main.head.awk) stores attributes in attr[]
-  - port, from, ...
-  - menu_hook, run_hook, ...
-- (ctx.awk) gathers context information in ctx[]
-  - wdir, wm_name, ...
-- awk's main loop is run for each record (line):
-  - (main.head.awk) preprocess records (filter_foo, %foo, etc)
-  - (class.awk) extracts fields from record into class[]
-  - (port.*.awk) these are a sets of rules
-    - on match, an inline shell script is recorded in menu[],
-      - alternatively an awk function call can be recorded (see below)
-      - or anything else be done at once, mostly used for debugging
-  - (main.tail.awk) when a menu has been constructed, it is given to the choice agent
-    - which may start a menu agent
-    - or select automatically based on heuristics
-    - or abort, or do something else
-  - users choice is then given to the start agent
-    - special case: if the command starts with "@", the given awk function
-      is called instead (with one argument, the rest of the string)
+  ### hook req into environment variables
+  $ export BROWSER='req -p open '
+  # same for EDITOR, TERMINAL, ...
 
+  ### replace xdg_open by req (or req -menu)
 
-DOWNLOAD
+  ### set up your filemanager to let req open all files
 
-github
-$ git clone https://github.com/robert-figura/req ~/.req
+  ...
 
+== Dependencies ==
 
-DEPENDENCIES
-
-- gawk:
+- gawk >= 4.1:
   http://www.gnu.org/software/gawk/gawk.html
 - bash:
   http://cnswww.cns.cwru.edu/~chet/bash/bashtop.html
 
-- gawk headers, gnu make, and some c compiler (for exec.so support)
+- gawkapi.h headers, gnu make, and some c compiler (for exec.so support)
   - supposed to be optional. will be fixed!
 
-optional build dependencies:
-- x11 headers, gnu make, and some c compiler (for vmenu)
+== Other suggested software ==
 
-strongly suggested runtime dependencies, not much fun without:
-
-- file:  (file type recognition)
+- file (file type recognition)
   http://www.darwinsys.com/file/
-- dmenu: (fast x11 menu)
+- dmenu (fast x11 menu)
   http://suckless.org/dmenu
-- xclip: (x11 clipboard support)
+- xclip (x11 clipboard support)
   http://xclip.sourceforge.net/
-- xprop: (x11 window context detection)
+- xprop (x11 window context detection)
   http://xorg.freedesktop.org/wiki
-
-optional runtime dependencies, or use your own favorite tools:
-
-- xbindkeys: (for hotkey daemon)
+- xbindkeys (for hotkey daemon)
   http://hocwp.free.fr/xbindkeys/xbindkeys.html
-- xterm: (auto-set xterm background)
+- xterm (auto-set xterm background examples)
   http://invisible-island.net/xterm
-- less: (the default pager)
+- less (the default pager)
   http://www.greenwoodsoftware.com/less
-- mercurial: (to back up your settings)
-  http://www.selenic.com/mercurial/
-
-A fast tiling windowmanager:
-http://suckless.org/dwm
-
-a minimalist browser
-http://surf.suckless.org/
-
-add your favorite application here...
-
-
-INSTALL
-
-$ hg clone teslawm.org/req/hg ~/.req
-$ cd ~/.req
-$ cp config.mk.sample config.mk
-### optionally fetch or locate awk extension header
-### edit config.mk
-$ make
-### maybe edit req.conf
-### test it:
-$ ./req -d foobar
-### copy front-end to someplace in your path
-$ cp req ~/bin
-
-
-APPLICATION SUPPORT
-
-- xterm colorization
-  $ alias xterm='req -p xterm -alias'
-- bash completion
-  $ complete -o default -C 'req -p bash-completion -alias' -D
-- hotkey daemon
-  $ ~/.req/bin/xbindkeys-hotkeyd.sh &
-- hook req into environment variables
-  $ export BROWSER='req -p open '
-  $ export TERMINAL, ...
-- replace xdg_open by req (or req -menu)
-  - set up your filemanager to let req open all files
-- patch your browser to always open urls through req
-...
-
-for more examples see doc/support
-
-
-BUGS AND CAVEATS
-
-- The rules, classifications and context code reflect my personal
-  preferences and yours are bound to be very much different. There's
-  just too much software out there. So you'll have to gather your own
-  rules to make it useful. Please share your finds!
-
-- In many places the code is prototypical, overly simplistic and
-  sometimes kind of broken. Much of it can be improved, feel free to
-  step in. Other cases might suggest that the whole thing is a hack,
-  and maybe it is...
-
-- Gawk is kinda almost fit for this job. It's nice because of its
-  small footprint, interesting featureset and notation, and because it
-  lives on almost all unix systems. But you have to do things the awk
-  way or you'll regret it. Most awk scripts are simple, but awk itself
-  isn't. Because of that you'll find hacks, workarounds and
-  limitations.
-
-
-FUTURE
-
-The original quest to get my practical unix knowledge sorted, and to
-bring reason to my daily text snippet load has so far been a
-tremendous experience. But still, there is lots left to pick up:
-
-- generalize port.hotkey and port.dispatch to an eventd (better performance, too)
-- better remote host support. publish, fusermount, system query, ...
-  - generalized buddy list
-- more agressive data extraction, e.g. contacts, urls, ...
-- context sensitive history
-- a queue manager and better multiline support
-- port to android (reasonable?)
-- and, of course, clean everything up, and fix bugs!
-
-On the other hand, the conception could easily support completely new
-directions for experimentation:
-
-- remote system monitoring, notification, and instant messageing
-- better sticky-notes, log some context along, or use context to find the relevant ones
-- support more protocols, e.g. mbox, syslog, dbus, inotifywait, ...
-- build bridges to other subsystems, e.g. browser, kernel info, ...
-- better local network scanning
-
-I'd also really like to see ideas on how to share the newest req
-tricks with the least hazzle. Maybe we need a microformat? twitter? Or
-integration with some pastebin? What can we get out of our dvcs? Your
-opinion?
-
-
-CONTACT
-
-Success stories, ideas, or insults? Send an email: rf@teslawm.org
-
-
-MY IDEA?
-
-Plan9's plumber has been there for a long time. I never got to use it,
-but i read Rob Pike's paper[1]. Wanted to play with something similar,
-so i decided to use a scripting language to specify rules... and
-started to code away in awk.
-
-On the other hand, all of it is from scratch, i encountered many
-obstacles and invested quite some effort to find useful designs. So
-this implementation is by my hands and there is no one else to blame
-for it.
-
-And there's vmenu. It is a fork of 9menu by Anselm Garbe which i only
-patched to do keyboard handling and to change the input format (the
-latter i now regret). You should consider using vintage dmenu in any
-case.
-
-
-REFERENCES
-
-[1] "Plumbing and Other Utilities", Rob Pike
-    http://doc.cat-v.org/plan_9/4th_edition/papers/plumb
+- dwm (fast tiling windowmanager)
+  http://suckless.org/dwm
+- surf (minimalist browser)
+  http://surf.suckless.org/
+- git (to back up your rules)
+  http://git-scm.com/
