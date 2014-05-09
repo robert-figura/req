@@ -158,5 +158,6 @@ func collapse(s,    t) {
 
 func quit(i) {
     cleanup()
+    clearMenu()
     exit i
 }
