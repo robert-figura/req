@@ -84,14 +84,13 @@ message_file="$TEMP/req-$message_id.args"
 data_file="$TEMP/req-$message_id.data"
 
 # todo: better temp dir location:
-mkdir -p "TEMP"
+mkdir -p "$TEMP"
 touch "$message_file"
 
 if tty -s <&1 ; then
   attr "term=$TERM"
 fi
 
-# todo: cmdline shortcut: discover command, look for one that matches a regex and just use that
 while test -n "$1" ; do
   case "$1" in
     -p) # port (-a port=<port>)
