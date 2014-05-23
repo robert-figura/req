@@ -45,7 +45,7 @@ attr["from"] == "mail-incoming" {
 # we get a file as argument:
 attr["from"] == "BROWSER" ||
 attr["from"] == "EDITOR" ||
-attr["from"] == "TERMINAL" ||
+# attr["from"] == "TERMINAL" ||
 attr["from"] == "irc-user" ||
 attr["from"] == "gnome-desktop-menu" {
     run(nest($0, "open", DEFAULT_MENU))
