@@ -25,7 +25,8 @@ BEGIN {
 	split_file(f, ctx, "ctx.file")
     }
     if(get("ctx.xprop.wm_class_name") == "XTerm" &&
-    match(get("ctx.xprop.wm_name"), /^([^@]*)@([^:]*):(.*)$/, m)) {
+    (match(get("ctx.xprop.wm_name"), /^([^@]*)@([^:]*):(.*)$/, m) ||
+     match(get("ctx.xprop.wm_name"), /^()()(.*)$/, m))) {
 	setCtx("app.exe", "xterm")
 	setCtx("app.user", m[1])
 	setCtx("app.host", m[2])
