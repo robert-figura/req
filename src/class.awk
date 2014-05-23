@@ -39,6 +39,14 @@ match($0, /([0-9][0-9][0-9][0-9])[-.,:; ]+(1[012]|0?[1-9])[-.,:; ]+(3[01]|[12][0
     set("mon", m[2])
     set("mday", m[3])
 }
+# 2012, Mar 17 
+match($0, /([0-9][0-9][0-9][0-9])[-.,:; ]+([a-zA-Z][a-zA-Z][a-zA-Z])[-.,:; ]+(3[01]|[12][0-9]|0?[1-9])/, m) &&
+match("janfebmaraprmayjunjulaugsepoctnovdec", tolower(m[2])) &&
+RSTART % 3 == 1 {
+    set("year", m[1])
+    set("mon", (RSTART+2)/3) # <- thanks for this trick to Ed Morton in comp.lang.awk
+    set("mday", m[3])
+}
 # 17.3.2012
 match($0, /(3[01]|[12][0-9]|0?[1-9])[-.,:; ]+(1[012]|0?[1-9])[-.,:; ]+([0-9][0-9][0-9][0-9])/, m) {
     set("mday", m[1])
