@@ -1,5 +1,5 @@
 
-= req - a gawk und dmenu powered plumberlike =
+= req - a gawk and dmenu powered plumberlike =
 
 [...plumber?] I seem to remember thinking that it was sort of awk inspired
 (Aharon Robbins on comp.lang.awk)
@@ -8,11 +8,11 @@ Rob Pike's paper[1] does a good job at explaining what plumber does.
 With req you further get a scripting language for rules, a menu api,
 and lots of examples to get you started.
 
-[1] "Plumbing and Other Utilities", Rob Pike
-http://doc.cat-v.org/plan_9/4th_edition/papers/plumb
-
 req homepage:
 https://github.com/robert-figura/req
+
+[1] "Plumbing and Other Utilities", Rob Pike
+http://doc.cat-v.org/plan_9/4th_edition/papers/plumb
 
 
 = SYNOPSIS =
@@ -46,7 +46,7 @@ up applications to let those run req, e.g. your filemanager to run req
 on the currently selected file. In the following you see the
 commandline interface in action:
 
-  # note: -t shows the command instead of executing it, -d dumps the menu
+  # note: -t shows the command instead of executing it
 
   # mimetype based file launcher
   $ mv trivium1.pdf z.doc
@@ -69,11 +69,13 @@ commandline interface in action:
   # sorry, i lied. the actual -t facilities can't yet _show_ the above,
   # because of a download wrapper. But it works, and you get the idea
 
-If there is no default action, you can request to get a choice using
-the -menu switch. In the following i'll use -d, to get the menu
-printed to the console instead. The asterisk "*" indicates that the
-auto flag is set, allowing to launch those when interaction isn't
-requested.
+If there is no "auto" action it'll open a menu. You can also
+explicitly request a choice using the -menu switch. In the following
+i'll use -d, to get the menu printed to the console instead. The
+asterisk "*" indicates that the auto flag is set, allowing to launch
+those when interaction isn't requested.
+
+  # -d dumps the menu and quits
 
   # search & translate
   $ req -d foobar
@@ -96,11 +98,11 @@ requested.
 
 = EXAMPLE CODE =
 
-Your rules should go to the port.*.awk files. It can be as simple as the
+Your rules should go to port.*.awk files. It can be as simple as the
 following two-liner suggests:
 
   # a temporary rule i'd put in port.open.awk...
-  get("mimetype") ~ /^video\// && tolower(get("file.name")) ~ /simon.templar/ {
+  get("file.mimetype") ~ /^video\// && tolower(get("file.name")) ~ /simon.templar/ {
       export("mplayer_args", "-vf crop=526:400:98:4 ")
   }
 
@@ -161,7 +163,7 @@ Suggestion: Read the source. First try some src/port.*.awk files,
 maybe start here:
 https://github.com/robert-figura/req/blob/master/src/port.open.awk
 
-Suggestion: Grep the source for menu labels, commands or namespace
+Suggestion: Grep the source for menu labels, commands, or namespace
 elements.
 
 
@@ -193,7 +195,7 @@ You could stop here.
   $ ~/.req/bin/xbindkeys-hotkeyd.sh &
 
   ### hook req into environment variables
-  $ export BROWSER='req -p open '
+  $ export BROWSER='req -p dispatch -f BROWSER'
   # same for EDITOR, TERMINAL, ...
 
   ### replace xdg_open by req (or req -menu)
@@ -201,6 +203,7 @@ You could stop here.
   ### set up your filemanager to let req open all files
 
   ...
+
 
 == Dependencies ==
 

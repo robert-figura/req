@@ -1,13 +1,10 @@
 
 # pick a port based on -f / attr.from or a keyword provided as $0
 
-# rationale: configuring other software is nasty, mostly because we
-# have to work on many files in different formats to put up a new
-# concept.
-
-# One could use port files instead, solely including other port files,
-# but it seems a bit of a waste to have that many files. And using
-# attr.from is more suggestive when it comes to name these files.
+# port.dispatch routes calls triggered by applications to what the following rules say.
+# it's allowed to ignore the input and only handle the event itself.
+# let's use the string "dummy" as argument to be ignored,
+# to improve readability of the call configured in the application.
 
 # todo: we could do without by better employing %notation to refer to nested instances' ctx:
 @include "ctx.awk"
@@ -23,7 +20,7 @@ function menucolors(fg, bg, selfg, selbg,    s) {
     export("menu_sel_fg", selfg)
     export("menu_sel_bg", selbg)
 }
-# events without input should receive it's event identifier as input # todo: we can do better!
+# todo: is putting subevent names in $0 a good idea? i don't think so...
 attr["from"] == "wm" && $0 == "title1" {
     menucolors("#ffffff", "#006699", "#ffffff", "#ff7f00")
     run(nest(get("ctx.xprop.wm_name"), "wm_name", MOUSE_MENU))
@@ -89,7 +86,7 @@ REQ_VERBOSE && attr["from"] == "download-success" {
     print "url: " attr["download_url"]
     print "file: " attr["download_file"]
     printf("%s", "hit [ENTER] to continue: ")
-    system("read")
+    system("read") # todo: erm...?!?
 }
 attr["from"] == "download-error" {
     print "\nERROR: download failed!"
@@ -98,7 +95,7 @@ attr["from"] == "download-error" {
     print "url: " attr["download_url"]
     print "debug: " $0
     printf("%s", "hit [ENTER] to continue: ")
-    system("read")
+    system("read") # todo: erm...?!?
 }
 
 func umount_menu(    f, s, l, m) {

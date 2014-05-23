@@ -14,7 +14,6 @@
     xterm_flags = ""
 }
 
-# todo: move to class.shell.awk?:
 # try to unwrap prefix commands, to get more information out of it:
 get("exe") == "xterm" {
     # todo: there must be a more elegant way to work on $foo, maybe convert to/from R[] array and use array tools...

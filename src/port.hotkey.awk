@@ -82,6 +82,7 @@ hotkey("shift+mod4+a") {
     spawn("req -f hotkey -p open -menu \"$(xclip -o)\"")
 }
 
+# todo: port file menus to port.dispatch.awk:
 function menucolors(fg, bg, selfg, selbg,    s) {
     s =   flag("-a", "menu_fg=" fg)
     s = s flag("-a", "menu_bg=" bg)
