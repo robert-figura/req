@@ -7,26 +7,26 @@ BEGIN {
     teslawm_fifo = ENVIRON["TESLAWM_fifo"]
 }
 
-get("ctx.xprop.wm_class_name") == "Sonata" {
-    set("ctx.xprop.wm_name", HOME "/mnt/ssh/rfigura@wirsing/home/rfigura/pub/audio/" get("ctx.xprop.wm_name"))
+get("xprop.wm_class_name") == "Sonata" {
+    set("xprop.wm_name", HOME "/mnt/ssh/rfigura@wirsing/home/rfigura/pub/audio/" get("xprop.wm_name"))
 }
 
-get("ctx.xwin") && teslawm_fifo {
+get("xwin") && teslawm_fifo {
     # todo: improve teslawm to accept a window id in commands:
-    label("close"); menu("echo close " get("ctx.xwin") " > " Q(teslawm_fifo))
-    label("movemouse"); menu("echo movemouse " get("ctx.xwin") " > " Q(teslawm_fifo))
-    label("resizemouse"); menu("echo resizemouse " get("ctx.xwin") " > " Q(teslawm_fifo))
+    label("close"); menu("echo close " get("xwin") " > " Q(teslawm_fifo))
+    label("movemouse"); menu("echo movemouse " get("xwin") " > " Q(teslawm_fifo))
+    label("resizemouse"); menu("echo resizemouse " get("xwin") " > " Q(teslawm_fifo))
 }
-get("ctx.xwin") {
-    menu("xkill -id " get("ctx.xwin"))
-    menu(pager("xwininfo -id " get("ctx.xwin")))
-    menu(pager("xprop -id " get("ctx.xwin")))
-    label("wm_name..."); menu(nest(get("ctx.xprop.wm_name"), "open"))
-#    label("teslawm rule (sel)"); menu("@xsel " get("ctx.xprop.wm_class_name") ":" get("ctx.xprop.wm_class") ":" get("ctx.xprop.wm_name"))
+get("xwin") {
+    menu("xkill -id " get("xwin"))
+    menu(pager("xwininfo -id " get("xwin")))
+    menu(pager("xprop -id " get("xwin")))
+    label("wm_name..."); menu(nest(get("xprop.wm_name"), "open"))
+#    label("teslawm rule (sel)"); menu("@xsel " get("xprop.wm_class_name") ":" get("xprop.wm_class") ":" get("xprop.wm_name"))
 }
 
 {
-    set("pid", get("ctx.xprop.net_wm_pid"))
+    set("pid", get("xprop.net_wm_pid"))
 }
 @include "port.pid.awk"
 @include "port.default.awk"
