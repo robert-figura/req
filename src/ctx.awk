@@ -56,4 +56,10 @@ BEGIN {
     setCtx("wdir", ENVIRON["PWD"])
     if(get("ctx.file.dirname"))
 	setCtx("wdir", get("ctx.file.dirname"))
+
+    # current wifi
+    split(btick("wpa_cli status"), m, "\n")
+    for(i = 1; i <= length(m); ++i)
+	if(match(m[i], /^([^=]*)=(.*)$/, a))
+	    setCtx("wifi_" a[1], a[2])
 }
