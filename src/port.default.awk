@@ -20,7 +20,7 @@ attr["from"] == "bookmarks" {
 func pick_line(s) {
     s = collapse(s)
     c = btick(nest(s, "menu"))
-    runHook(nest(c))
+    runHook(nest(trim(c)))
 }
 # this is a hack to reclassify full line, see main.head.awk:
 func merge_lines(s) {
