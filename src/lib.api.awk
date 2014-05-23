@@ -95,10 +95,10 @@ func run_print(cmd) {
     print cmd
 }
 func run_system(cmd) {
-    system(cmd)
+    system("cd " Q(get("pwd")) " ; " cmd)
 }
 func run_spawn(cmd) {
-    system(cmd " &")
+    system("cd " Q(get("pwd")) " ; " cmd " &")
 }
 # exec() comes with awk -l exec.so ...
 func run_exec(cmd) {
@@ -106,7 +106,7 @@ func run_exec(cmd) {
 #    if(extension("exec.so", "dl_load"))
 #	run_system(cmd)
     cleanup()
-    exec(cmd)
+    exec("cd " Q(get("pwd")) " ; " cmd)
     # this should also execute the END block:
 #    exec(cmd, 1)
 }
