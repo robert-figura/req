@@ -11,7 +11,6 @@ get("ctx.xprop.wm_class_name") == "Surf" {
 }
 
 @include "class.awk"
-@include "class.x11.awk"
 
 function enter(strs) {
     return xterm("enter -w " strs)
