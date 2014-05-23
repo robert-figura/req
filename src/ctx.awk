@@ -51,6 +51,8 @@ BEGIN {
 	setCtx("app.exe", "hgtk")
 	split_file(m[1], ctx, "ctx.file")
     }
+    if(get("ctx.xprop.wm_class_name") == "Surf")
+	setCtx("app.url", get("ctx.xprop.url"))
 
     # working directory
     setCtx("wdir", ENVIRON["PWD"])
