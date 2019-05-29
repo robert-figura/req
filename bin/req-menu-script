@@ -1,0 +1,4 @@
+#!/bin/sh
+
+port="`basename "$0"`"
+exec req -p "$port" -menu "$@"

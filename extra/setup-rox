@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p ~/.config/rox.sourceforge.net/MIME-types/
+cp -n rox-MIME-types/* ~/.config/rox.sourceforge.net/MIME-types/

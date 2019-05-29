@@ -1,0 +1,36 @@
+#!/bin/sh
+
+if ! type xbindkeys > /dev/null ; then
+  echo "error: need xbindkeys (http://hocwp.free.fr/xbindkeys/xbindkeys.html)"
+  exit 2
+fi
+
+REQ_DIR="${REQ_DIR:-$HOME/.req}"
+
+port="hotkey"
+if test -n "$1" ; then
+  port="$1"
+fi
+
+port_file="$REQ_DIR/port/$port.awk"
+if ! test -r "$port_file" ; then
+  echo "error: cannot read '$port_file'"
+  echo "usage: $0 <port>"
+  exit 1
+fi
+
+killall xbindkeys 2> /dev/null
+
+export LC_ALL="C"
+gawk '
+  match($0, /hotkey\("([-+A-Za-z0-9]+)"\)/, m) {
+    print "\"echo xbindkeys:" m[1] "\"\n  " m[1]
+  }
+' "$port_file" |
+xbindkeys -n -f /dev/stdin |
+req -p "$port" -stdin
+
+# restart
+if test "$?" = "101" ; then
+  exec "$0" "$@"
+fi

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# to make constructing a frontend easier.
+# see for example dispatch
+
+# todo: this exposes req api, but it shouldn't
+
+port="`basename "$0"`"
+exec req -p "$port" "$@"

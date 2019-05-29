@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# ~/.mailcap is used by mutt, sylpheed, ...
+
+cp -n mailcap ~/.mailcap

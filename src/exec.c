@@ -47,13 +47,15 @@ do_exec(int nargs, awk_value_t *result)
 	    // for this trick to work this extension needs to be loaded *first*,
 	    // otherwise other atexit handlers may not get executed
 	    awk_atexit(exec_atexit_handler, strdup(cmd.str_value.str));
-// this does not work, need to call exit from script:
-//            exit(0);
+// these don't not work, need to call exit from script:
+//	    exit(0);
+//	    gawk_exit(0);
 	    return make_number(0, result);
 	}
     }
     
     int ret;
+    fflush(NULL);
     ret = execl(shell, shell, "-c", cmd.str_value.str, (char *)NULL);
     if(ret < 0) // error
 	update_ERRNO_int(errno);
@@ -64,4 +66,5 @@ static awk_ext_func_t func_table[] = {
     { "exec", do_exec, 2 },
 };
 
+// this is implemented as macro, and the second argument is converted to a string!!
 dl_load_func(func_table, exec, "")

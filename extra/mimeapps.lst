@@ -1,0 +1,8 @@
+
+[Added Associations]
+*/*=req.desktop
+
+[Removed Associations]
+
+[Default Applications]
+*/*=req.desktop

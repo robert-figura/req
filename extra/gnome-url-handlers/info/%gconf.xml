@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<gconf>
+	<entry name="command" mtime="1483352211" type="string">
+		<stringvalue>req -p dispatch -f gnome-url-info %s</stringvalue>
+	</entry>
+</gconf>

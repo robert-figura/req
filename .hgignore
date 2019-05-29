@@ -1,6 +1,7 @@
-^src/vmenu$
-^src/config.mk$
-^src/exec\.so$
-\.o$
+^src/exec\.s?o$
+^req\.conf$
+^bookmarks$
+^decrypt\.cache$
+^favorites$
+^history$
 ^\.git/
-^\.gitignore

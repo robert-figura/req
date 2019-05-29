@@ -1,0 +1,223 @@
+#!/bin/sh
+
+REQ_VERSION="0.4.4"
+
+# defaults:
+export REQ_DIR="${REQ_DIR:-$HOME/.req}"
+
+TEMP="${TEMP:-$REQ_DIR/tmp}"
+
+# need this as a variable here:
+port="open"
+
+key="`date "+%s"`-$$-$REQ_LEVEL"
+
+export REQ_ARG_FILE="$TEMP/req-$key.arg"
+export REQ_DATA_FILE="$TEMP/req-$key.data"
+
+mkdir -p "$TEMP"
+
+exec_so_args=""
+if test -r "$REQ_DIR/src/exec.so" ; then
+  exec_so_args="-l exec.so"
+fi
+
+################################################################
+version () {
+  echo "req-$REQ_VERSION, (c) 2012-2017 Robert Figura, see LICENSE for details"
+  echo
+}
+usage () {
+  echo "$0 [-OPTIONS...] [--] DATA"
+  echo "$0 [-OPTIONS...] -file DATA_FILE"
+  echo "$0 [-OPTIONS...] -stdin"
+  gawk '
+/^#### / {
+  print "\n" substr($0, 6)
+}
+match($0, /(-.*)[)] *# *(.*) *# *(.*)$/, m) {
+  print "  " m[1] " " m[2] "^" m[3]
+}
+' "$0" | column -e -t -s'^'
+}
+
+arg () {
+  echo "$1=$2" >> "$REQ_ARG_FILE"
+}
+data () {
+  while test -n "$1" ; do
+    echo "$1" >> "$REQ_DATA_FILE"
+    shift
+  done
+}
+ctx () {
+  user_ctx="/dev/null"
+  if test -r "$REQ_DIR/port/ctx-$port.awk" ; then
+    user_ctx="$REQ_DIR/port/ctx-$port.awk"
+  fi
+  if test -z "$REQ_CTX_FILE" || ! test -r "$REQ_CTX_FILE" ; then
+    export REQ_CTX_FILE="$TEMP/req-$key.ctx"
+    export LC_ALL="C"
+    export AWKPATH="$REQ_DIR/port:$REQ_DIR/lib"
+    export AWKLIBPATH="$REQ_DIR/src"
+    echo | gawk -f "ctx.awk" -f "$user_ctx" > "$REQ_CTX_FILE"
+  fi
+}
+req () {
+  arg "port" "$port"
+  if tty -s <&1 && test "dumb" != "$TERM"; then
+    arg tty "$TERM"
+  fi
+  ctx
+  export LC_ALL="C"
+  export AWKPATH="$REQ_DIR/port:$REQ_DIR/lib"
+  export AWKLIBPATH="$REQ_DIR/src"
+  exec gawk -f "req.awk" -f "$port.awk" $exec_so_args -e '{ at_last() }' "$@"
+}
+
+################################################################
+
+touch "$REQ_ARG_FILE"
+
+while test -n "$1" ; do
+  case "$1" in
+#### ARGUMENTS
+    -p) # <name> # 'port' what to do (default: open)
+      port="$2"
+      shift
+      ;;
+    -f) # <name> # 'from' triggering application (default: shell)
+      arg "from" "$2"
+      shift
+      ;;
+    -a) # <key> <value> # assign argument
+      arg "$2" "$3"
+      shift
+      shift
+      ;;
+    -A) # <file> # import argument file
+      cat "$2" >> "$REQ_ARG_FILE"
+      shift
+      ;;
+    -R) # <file> # import and remove argument file
+      cat "$2" >> "$REQ_ARG_FILE"
+      rm -f "$2"
+      shift
+      ;;
+#### INPUT
+    --) # ... # suppress option parsing for remaining arguments
+      shift
+      for i in "$@" ; do
+	data "$i"
+      done
+      break
+      ;;
+    -e) # ... # rest of commandline is a single data record
+      shift
+      data "$*"
+      break
+      ;;
+    -|-stdin) # # read from stdin and exit
+      REQ_DATA_FILE= req
+      ;;
+    -d|-file) # <file> # read data from file
+      cat "$2" >> "$REQ_DATA_FILE"
+      shift
+      ;;
+#### FILTERS
+    -1|-single) # # exit after processing the first record
+      arg "max_nr" "1"
+      ;;
+    -%|-percent) # # substitute e.g. %xwin in data
+      arg "filter_percent" "1"
+      ;;
+    -u|-uniq) # # filter duplicate input lines
+      arg "filter_uniq" "1"
+      ;;
+    -#|-comment) # # remove comments
+      arg "filter_strip_comment" "1"
+      arg "filter_skip_comment" "1"
+      ;;
+    -_|-empty) # # filter empty lines
+      arg "filter_skip_empty" "1"
+      ;;
+#### MENU
+    -i|-menu) # # always display interactive menu
+      arg "no_auto" "1"
+      ;;
+    -s|-select) # <num> # select from menu, -select <number>
+      arg "menu" "select"
+      arg "select" "$2"
+      shift
+      ;;
+    -q|-quiet) # # inhibit menu prompt (for unpatched dmenu)
+      arg "no_prompt" "1"
+      ;;
+#### INFO
+    -t) # # print command instead of running it
+      arg "mode" "test"
+      arg "prop" "cmd"
+      ;;
+
+    -X) # # dump context and exit
+      ctx
+      cat "$REQ_CTX_FILE"
+      rm -f "$REQ_CTX_FILE" "$REQ_ARG_FILE" "$REQ_DATA_FILE"
+      exit 0
+      ;;
+    -C) # # dump classification
+      arg "mode" "dump_class"
+      ;;
+    -D) # # dump internal state
+      arg "mode" "dump"
+      ;;
+    -x|-ctx) # <prop> # print context property and exit
+      arg "mode" "ctx"
+      arg "prop" "$2"
+      shift
+      ;;
+    -c|-class) # <prop> # print property for each record
+      arg "mode" "class"
+      arg "prop" "$2"
+      shift
+      ;;
+    -l|-list) # <prop> # print property per available choices
+      arg "mode" "list"
+      arg "prop" "$2"
+      shift
+      ;;
+    -T|-test) # <prop> # print property after choice
+      arg "mode" "test"
+      arg "prop" "$2"
+      shift
+      ;;
+
+    -V|-version) # # print version info
+      version
+      exit 0
+      ;;
+    -h|-help) # # print version and usage info
+      version
+      usage
+      exit 0
+      ;;
+
+    -*)
+      echo "ERROR: unknown option '$1'"
+      usage
+      exit 255
+      ;;
+
+    *)
+      data "$1"
+      ;;
+  esac
+  shift
+done
+
+if test -r "$REQ_DATA_FILE" ; then
+  req "$REQ_DATA_FILE"
+else
+  echo "$0: error: no data"
+  exit 2
+fi

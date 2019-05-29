@@ -1,0 +1,2 @@
+#! /bin/sh
+exec dispatch -f rox-mime -e "$@"

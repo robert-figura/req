@@ -1,7 +1,7 @@
 
 include config.mk
 
-all: options exec.so
+all: options exec.so test
 
 options:
 	@echo req build options:
@@ -22,6 +22,20 @@ config.mk:
 
 clean:
 	@echo cleaning
-	@rm -f exec.so exec.o
+	@rm -f vmenu vmenu.o
 
-.PHONY: all options clean
+TEST = test-exec-immed.out test-exec-end.out
+
+test-exec-end.out: test-exec-end.awk exec.so
+	echo | gawk -l ./exec.so -f $< > $@
+	echo "$$?" >> $@
+
+test-exec-immed.out: test-exec-immed.awk exec.so
+	echo | gawk -l ./exec.so -f $< > $@
+	echo "$$?" >> $@
+
+test: $(TEST)
+	hg status $(TEST) | tee /dev/stderr | awk '/./{exit 1}'
+	echo test success
+
+.PHONY: all options clean test

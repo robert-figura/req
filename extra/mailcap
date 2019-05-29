@@ -1,0 +1,5 @@
+
+# put to ~/.mailcap
+# used by mutt, sylpheed, ...
+
+*/*; req -p open -f mailcap "%s"

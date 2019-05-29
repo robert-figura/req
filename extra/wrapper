@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# use this as front-end to commandline parsing awk scripts under extra/
+# see for example extra/completion.awk, and extra/xterm.awk.
+
+export REQ_DIR="${REQ_DIR:-$HOME/.req}"
+
+export LC_ALL="C"
+export AWKPATH="$REQ_DIR/lib:$REQ_DIR/extra"
+export AWKLIBPATH="$REQ_DIR/src"
+
+awkf="$REQ_DIR/extra/`basename "$0"`.awk"
+tmpf="`mktemp -p "$TEMP"`"
+
+exec_so_args=""
+if test -r "$REQ_DIR/src/exec.so" ; then
+  exec_so_args="-l exec.so"
+fi
+
+printf "%s\n" "$0" "$@" > "$tmpf"
+exec gawk -f "$awkf" $exec_so_args "$tmpf"

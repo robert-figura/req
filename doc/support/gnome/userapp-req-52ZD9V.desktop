@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=req
-Exec=req -p dispatch -f gnome-desktop %F
-NoDisplay=true

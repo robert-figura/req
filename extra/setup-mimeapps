@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# mimeapps.lst is used by xdg-open
+
+cp -n mimeapps.lst ~/.config/mimeapps.list

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# run `req -p dispatch`, which will usually start `req -p open`. see port/dispatch.awk
+
+port="`basename "$0"`"
+
+ppid="$PPID"
+if test -n "$ppid" ; then
+  ppid_cmd="`ps -h -o comm --pid "$ppid"`"
+fi
+
+if test -n "$ppid_cmd" ; then
+  exec req -p "$port" -f "$ppid_cmd" "$@" # todo: this exposes req's commandline api, but it shouldn't
+else
+  exec req -p "$port" "$@"
+fi

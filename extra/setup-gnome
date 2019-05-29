@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p ~/.gconf/desktop/gnome
+cp -na gnome-url-handlers/* ~/.gconf/desktop/gnome

@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+
+Version=1.1
+Type=Application
+Name=req
+GenericName=Launcher
+Comment=frontend to search, launch, and automate stuff
+Icon=req
+Exec=req -p dispatch -f gnome-desktop -- %U
+Terminal=false
+MimeType=*/*

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+youtube-dl --no-playlist --print-json --skip-download "$1" |
+while read i ; do
+  echo "$i" | ~/src/gcash/bin/json -c /dev/stdin -t '$[title] [$[duration]] by $[uploader]
+$[webpage_url]
+'
+done

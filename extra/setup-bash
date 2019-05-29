@@ -1,0 +1,9 @@
+
+# put these in your .profile
+export BROWSER="req -f BROWSER -p open"
+export EDITOR="req -f EDITOR -p edit"
+export PAGER="req -f PAGER -p pager"
+
+export TERMINAL="req -f TERMINAL -p xterm "
+
+# alias xterm="$HOME/.req/extra/req-xterm -alias"

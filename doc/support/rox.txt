@@ -1,8 +1,0 @@
-
-as rox already puts selected files to the x11 selection you can use
-your desktop hotkeys (see wm.txt)
-
-or, add MIME-type files for the main mimetype classes. e.g.:
-
-$ mkdir -p ~/.config/rox.sourceforge.net/MIME-types/
-$ cp doc/support/rox-MIME-types/* ~/.config/rox.sourceforge.net/MIME-types/

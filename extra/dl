@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# usage: download <url> <command>...
+
+# this script downloads into a sandbox directory, moves the result file, and 
+# calls `req -p dl -f ...` on each milestone:
+#
+# -f dl_prepare
+# -f dl_waiting
+# -f dl_error or -f dl_success
+
+url="$1"
+agent="$2"
+shift
+
+tmpname="$(date "+%s")-$$"
+mkdir "$tmpname"
+cd "$tmpname"
+dl_dir="$(pwd)"
+
+function REQ {
+  # default arguments
+  req -p dispatch -a dl_url "$url" -a dl_agent "$agent" "$@"
+}
+
+REQ -f dl_prepare -a dl_dir "$dl_dir" "$dl_dir"
+
+echo "\$ $*"
+"$@" &
+pid="$!"
+
+REQ -f dl_waiting -a dl_dir "$dl_dir" -a dl_pid "$pid" "$pid"
+
+wait
+exitcode="$?"
+file="$(ls)"
+cd -
+
+if test "$exitcode" != "0" ; then
+  error="nonzero exitcode"
+elif test -z "$file" ; then
+  error="no file"
+elif test -r "$file" ; then
+  error="collision"
+  result="$dl_dir/$file"
+else
+  mv "$dl_dir/$file" "$file"
+  result="`pwd`/$file"
+fi
+
+rmdir "$tmpname" 2> /dev/null
+
+if test -n "$error" ; then
+  REQ -f dl_error -a exitcode "$exitcode" -a dl_error "$error" "$result"
+else
+  REQ -f dl_success -a dl_file "$result" "$result"
+fi
+
