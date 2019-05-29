@@ -24,7 +24,7 @@ fi
 
 ################################################################
 version () {
-  echo "req-$REQ_VERSION, (c) 2012-2017 Robert Figura, see LICENSE for details"
+  echo "req-$REQ_VERSION, (c) 2012-2019 Robert Figura, see LICENSE for details"
   echo
 }
 usage () {

@@ -122,7 +122,7 @@ A commandline frontend to bind it all together, and bind it in a
 user-friendly api.
 
 ```
-req-0.4.3, (c) 2012-2017 Robert Figura, see LICENSE for details
+req-0.4.4, (c) 2012-2019 Robert Figura, see LICENSE for details
 
 req [-OPTIONS...] [--] DATA
 req [-OPTIONS...] -file DATA_FILE
@@ -154,13 +154,14 @@ MENU
   -q|-quiet          inhibit menu prompt (for unpatched dmenu)
 
 INFO
-  -x|-ctx <prop>     print context property and exit
-  -c|-class <prop>   print property for each record
-  -l|-list <prop>    print property for each choice
-  -t|-test <prop>    print property from chosen action
+  -t                 print command instead of running it
   -X                 dump context and exit
   -C                 dump classification
   -D                 dump internal state
+  -x|-ctx <prop>     print context property and exit
+  -c|-class <prop>   print property for each record
+  -l|-list <prop>    print property per available choices
+  -T|-test <prop>    print property after choice
   -V|-version        print version info
   -h|-help           print version and usage info
 ```
@@ -196,7 +197,7 @@ curl -O -L 'http://localhost/t.pdf'
 ```
 
 
-= LINKS =
+# LINKS
 
 - Homepage
   https://github.com/robert-figura/req
@@ -205,7 +206,7 @@ curl -O -L 'http://localhost/t.pdf'
   http://doc.cat-v.org/plan_9/4th_edition/papers/plumb
 
 
-== suggested software ==
+## suggested software
 
 Most of these dependencies can easily be changed in the source code, or fail reasonably.
 
@@ -234,7 +235,7 @@ Most of these dependencies can easily be changed in the source code, or fail rea
 - wpa_supplicant's wpa_cli (for wifi context detection)
   http://w1.di/wpa_supplicant/
 
-== related projects ==
+## related projects
 
 - *plan9port*'s plumber: an implementation very close to Rob Pike's plumber
   http://swtch.com/plan9port
