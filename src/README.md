@@ -1,10 +1,10 @@
 
-= exec.so gawk extension =
+# exec.so gawk extension
 
 exec.so gawk extension for calling the execl() system function from gawk.
 
 
-= QUICK START =
+# QUICK START
 
 You'll need a gawkapi.h matching your gawk installation.
 
@@ -39,7 +39,7 @@ The second method is better as it fits better into gawk's philosophy
 and it will lead to simpler scripts.
 
 
-== Why two implementations? ==
+## Why two implementations?
 
 The simplest way is to just call the execl() system function from this
 extension. That can be made work, bit it will not evaluate the END
